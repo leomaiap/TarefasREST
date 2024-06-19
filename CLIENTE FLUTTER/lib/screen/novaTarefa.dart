@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tarefas_rest/screen/mainScreen.dart';
 import '../model/task.dart';
 import '../service/apiSevice.dart';
-// Importe sua API service aqui se necessário
 
 class NovaTarefa extends StatefulWidget {
   final Task? task;

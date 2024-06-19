@@ -12,36 +12,53 @@ class MostrarTarefas extends StatefulWidget {
 }
 
 class _MostrarTarefasState extends State<MostrarTarefas> {
+  
+   late Future<List<Task>> _futureTasks;
 
-  List<Task> tasks = Task.mockTasks(); //subastituir pelo metodo fetch
+  @override
+  void initState() {
+    super.initState();
+    _futureTasks = Task.mockTasks(); //substituir pelo metodo fetch da ApiService
+  } 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                Task task = tasks[index];
-                return TaskWidget(task: task);
+            child: FutureBuilder<List<Task>>(
+              future: _futureTasks,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: const CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Erro: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('Nenhuma tarefa encontrada.'));
+                } else {
+                  List<Task> tasks = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: tasks.length,
+                    itemBuilder: (context, index) {
+                      Task task = tasks[index];
+                      return TaskWidget(task: task);
+                    },
+                  );
+                }
               },
             ),
           ),
-          Container(
-            padding: EdgeInsets.all(16.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: FilledButton.tonalIcon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NovaTarefa()),
-                  );
-                },
-                label: Text('Criar Tarefa'),
-                icon: Icon(Icons.add),
-              ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NovaTarefa()),
+                );
+              },
+              child: const Text('Criar Tarefa'),
             ),
           ),
         ],

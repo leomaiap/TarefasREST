@@ -51,7 +51,8 @@ class Task {
     return uniqueId;
   }
 
-  static List<Task> mockTasks() {
+  static Future<List<Task>> mockTasks() async {
+    await Future.delayed(const Duration(milliseconds: 10));
     List<Task> tasks = [];
 
     for (int i = 1; i <= 5; i++) {

@@ -23,11 +23,13 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(titles[indexPage]),
-        centerTitle: true,
-      ),
+      appBar: indexPage == 0 
+          ? AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(titles[indexPage]),
+              centerTitle: true,
+            )
+          : null,
       body: pages[indexPage],
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(

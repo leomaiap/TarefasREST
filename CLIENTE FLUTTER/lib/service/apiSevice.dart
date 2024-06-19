@@ -22,17 +22,6 @@ class ApiService {
     }
   }
 
-  // Método para buscar uma tarefa por ID
-  static Future<Task> fetchTask(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/tasks/$id'));
-
-    if (response.statusCode == 200) {
-      return Task.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Fail');
-    }
-  }
-
   // Método para criar uma nova tarefa
   static Future<Task> createTask(Task task) async {
     final response = await http.post(
@@ -90,19 +79,20 @@ class ApiService {
     }
   }
 
+  //Metodo para marcar como concluida
   static Future<Task> markTaskAsComplete(int id) async {
     final response = await http.put(
-      Uri.parse('$baseUrl/tasks/$id/complete'), // Endpoint específico para marcar como concluída
+      Uri.parse('$baseUrl/tasks/$id/complete'), 
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode({'isComplete': true}), // Corpo da requisição, pode variar conforme sua API
+      body: jsonEncode({'isComplete': true}),
     );
 
     if (response.statusCode == 200) {
       return Task.fromJson(json.decode(response.body));
     } else {
-      throw Exception('Failed to mark task as complete');
+      throw Exception('Fail');
     }
   }
 }
