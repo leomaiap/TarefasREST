@@ -206,7 +206,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
                     if (widget.task == null) {
                       // Cria uma nova tarefa
         
-                      //ApiService.createTask(editedTask);
+                      ApiService.createTask(editedTask);
                       print('Nova tarefa criada: $editedTask');
                       Navigator.pushReplacement(
                         context,
@@ -215,7 +215,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
                     } else {
                       // Edita uma tarefa existente
         
-                      //ApiService.updateTask(widget.task!.id, editedTask);
+                      ApiService.updateTask(widget.task!.id, editedTask);
                       print('Tarefa editada: ${editedTask.toString()}');
                       Navigator.pushReplacement(
                         context,

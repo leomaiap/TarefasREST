@@ -34,7 +34,7 @@ class _TaskWidgetState extends State<TaskWidget> {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
             color: colorsList[widget.task.color],
             borderRadius: BorderRadius.circular(20.0), // Borda arredondada
@@ -47,7 +47,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                 fontWeight: FontWeight.bold
               ),
             ),
-            SizedBox(height: 4,),
+            const SizedBox(height: 4,),
             Row(
               children: [
                 Row(
@@ -55,7 +55,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                     Icon(Icons.calendar_today,
                       size: screenSize.height * 0.018,
                     ),
-                    SizedBox(width: 6,),
+                    const SizedBox(width: 6,),
                     Text('${widget.task.date.day}/${widget.task.date.month}/${widget.task.date.year}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold
@@ -63,13 +63,13 @@ class _TaskWidgetState extends State<TaskWidget> {
                     ),
                   ],
                 ),
-                SizedBox(width: 20,),
+                const SizedBox(width: 20,),
                 Row(
                   children: [
                     Icon(Icons.alarm,
                       size: screenSize.height * 0.018,
                     ),
-                    SizedBox(width: 6,),
+                    const SizedBox(width: 6,),
                     Text('${widget.task.date.hour.toString().padLeft(2, '0')}:${widget.task.date.minute.toString().padLeft(2, '0')}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold
@@ -77,13 +77,13 @@ class _TaskWidgetState extends State<TaskWidget> {
                     ),
                   ],
                 ),
-                Spacer(),
+                const Spacer(),
                 !widget.task.isComplete ? Row(
                   children: [
                     Icon(Icons.hourglass_empty_rounded,
                       size: screenSize.height * 0.018,
                     ),
-                    SizedBox(width: 6,),
+                    const SizedBox(width: 6,),
                     Text('Pendente',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold
@@ -96,7 +96,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                     Icon(Icons.done_outline_sharp,
                       size: screenSize.height * 0.018,
                     ),
-                    SizedBox(width: 6,),
+                    const SizedBox(width: 6,),
                     Text('Concluída',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold
@@ -106,10 +106,10 @@ class _TaskWidgetState extends State<TaskWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 7),
+            const SizedBox(height: 7),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(7),
@@ -122,7 +122,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                 ],
               )
             ),
-            SizedBox(height: 5,),
+            const SizedBox(height: 5,),
             Row(
               children: [
                 Column(
@@ -134,15 +134,15 @@ class _TaskWidgetState extends State<TaskWidget> {
                       ),
                       child: IconButton(
                         onPressed: (){
-                          //ApiService.deleteTask(widget.task.id);
+                          ApiService.deleteTask(widget.task.id);
                         },
-                        icon: Icon(Icons.delete_outline),
+                        icon: const Icon(Icons.delete_outline),
                         color: Colors.black,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 Container(
                 decoration: BoxDecoration(
                       color:  Colors.white.withOpacity(0.5),
@@ -155,11 +155,11 @@ class _TaskWidgetState extends State<TaskWidget> {
                         MaterialPageRoute(builder: (context) =>  NovaTarefa(task: widget.task)),
                       );
                     },
-                    icon: Icon(Icons.edit_outlined),
+                    icon: const Icon(Icons.edit_outlined),
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 !widget.task.isComplete ? Row(
                   children: [
                     Container(
@@ -169,18 +169,18 @@ class _TaskWidgetState extends State<TaskWidget> {
                       ),
                       child: IconButton(
                         onPressed: (){
-                          //ApiService.markTaskAsComplete(widget.task.id);
+                          ApiService.markTaskAsComplete(widget.task.id);
                         },
-                        icon: Icon(Icons.done_all),
+                        icon: const Icon(Icons.done_all),
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(width: 5,),
+                    const SizedBox(width: 5,),
                     Text('Marcar como concluído',
                       style: Theme.of(context).textTheme.bodySmall,
                     )
                   ],
-                ) : SizedBox()
+                ) : const SizedBox()
               ],
             )
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tarefas_rest/screen/novaTarefa.dart';
+import 'package:tarefas_rest/service/apiSevice.dart';
 import 'package:tarefas_rest/widget/taskWidget.dart';
 
 import '../model/task.dart';
@@ -18,7 +19,8 @@ class _MostrarTarefasState extends State<MostrarTarefas> {
   @override
   void initState() {
     super.initState();
-    _futureTasks = Task.mockTasks(); //substituir pelo metodo fetch da ApiService
+    //_futureTasks = Task.mockTasks(); //substituir pelo metodo fetch da ApiService
+    _futureTasks = ApiService.fetchTasks();
   } 
 
   @override

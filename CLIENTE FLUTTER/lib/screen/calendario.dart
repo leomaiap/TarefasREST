@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tarefas_rest/model/task.dart';
+import 'package:tarefas_rest/service/apiSevice.dart';
 import 'package:tarefas_rest/widget/taskWidget.dart';
 
 class Calendario extends StatefulWidget {
@@ -19,14 +20,16 @@ class _CalendarioState extends State<Calendario> {
   @override
   void initState() {
     super.initState();
-    _futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
+    //_futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
+    _futureTasks = ApiService.fetchTasksByDate(_focusedDay);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
-      _futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
+      //_futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
+      _futureTasks = ApiService.fetchTasksByDate(_focusedDay);
     });
   }
 
