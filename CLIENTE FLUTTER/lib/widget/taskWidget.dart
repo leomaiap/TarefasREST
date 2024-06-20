@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:tarefas_rest/service/apiSevice.dart';
-
 import '../model/task.dart';
 import '../screen/novaTarefa.dart';
 
 class TaskWidget extends StatefulWidget {
   final Task task;
-  const TaskWidget({super.key, required this.task});
+  final VoidCallback onTaskModified;
+
+  const TaskWidget({super.key, required this.task, required this.onTaskModified});
 
   @override
   State<TaskWidget> createState() => _TaskWidgetState();
@@ -30,80 +31,90 @@ class _TaskWidgetState extends State<TaskWidget> {
 
   @override
   Widget build(BuildContext context) {
-     Size screenSize = MediaQuery.of(context).size;
+    Size screenSize = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            color: colorsList[widget.task.color],
-            borderRadius: BorderRadius.circular(20.0), // Borda arredondada
-          ),
+          color: colorsList[widget.task.color],
+          borderRadius: BorderRadius.circular(20.0), // Borda arredondada
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(widget.task.title,
+            Text(
+              widget.task.title,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4,),
+            const SizedBox(height: 4),
             Row(
               children: [
                 Row(
                   children: [
-                    Icon(Icons.calendar_today,
+                    Icon(
+                      Icons.calendar_today,
                       size: screenSize.height * 0.018,
                     ),
-                    const SizedBox(width: 6,),
-                    Text('${widget.task.date.day}/${widget.task.date.month}/${widget.task.date.year}',
+                    const SizedBox(width: 6),
+                    Text(
+                      '${widget.task.date.day}/${widget.task.date.month}/${widget.task.date.year}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 20,),
+                const SizedBox(width: 20),
                 Row(
                   children: [
-                    Icon(Icons.alarm,
+                    Icon(
+                      Icons.alarm,
                       size: screenSize.height * 0.018,
                     ),
-                    const SizedBox(width: 6,),
-                    Text('${widget.task.date.hour.toString().padLeft(2, '0')}:${widget.task.date.minute.toString().padLeft(2, '0')}',
+                    const SizedBox(width: 6),
+                    Text(
+                      '${widget.task.date.hour.toString().padLeft(2, '0')}:${widget.task.date.minute.toString().padLeft(2, '0')}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
                 const Spacer(),
-                !widget.task.isComplete ? Row(
-                  children: [
-                    Icon(Icons.hourglass_empty_rounded,
-                      size: screenSize.height * 0.018,
-                    ),
-                    const SizedBox(width: 6,),
-                    Text('Pendente',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold
+                !widget.task.isComplete
+                    ? Row(
+                        children: [
+                          Icon(
+                            Icons.hourglass_empty_rounded,
+                            size: screenSize.height * 0.018,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Pendente',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Icon(
+                            Icons.done_outline_sharp,
+                            size: screenSize.height * 0.018,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Concluída',
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ) : 
-                Row(
-                  children: [
-                    Icon(Icons.done_outline_sharp,
-                      size: screenSize.height * 0.018,
-                    ),
-                    const SizedBox(width: 6,),
-                    Text('Concluída',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
             const SizedBox(height: 7),
@@ -118,23 +129,24 @@ class _TaskWidgetState extends State<TaskWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('ANOTAÇÃO:'),
-                  Text(widget.task.annotation)
+                  Text(widget.task.annotation),
                 ],
-              )
+              ),
             ),
-            const SizedBox(height: 5,),
+            const SizedBox(height: 5),
             Row(
               children: [
                 Column(
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color:  Colors.white.withOpacity(0.5),
+                        color: Colors.white.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: IconButton(
-                        onPressed: (){
-                          ApiService.deleteTask(widget.task.id);
+                        onPressed: () async {
+                          await ApiService.deleteTask(widget.task.id);
+                          widget.onTaskModified();
                         },
                         icon: const Icon(Icons.delete_outline),
                         color: Colors.black,
@@ -142,47 +154,54 @@ class _TaskWidgetState extends State<TaskWidget> {
                     ),
                   ],
                 ),
-                const SizedBox(width: 5,),
+                const SizedBox(width: 5),
                 Container(
-                decoration: BoxDecoration(
-                      color:  Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
                   child: IconButton(
-                    onPressed: (){
-                      Navigator.push(
+                    onPressed: () async {
+                      bool? result = await Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  NovaTarefa(task: widget.task)),
+                        MaterialPageRoute(builder: (context) => NovaTarefa(task: widget.task)),
                       );
+                      if (result == true) {
+                        widget.onTaskModified();
+                      }
                     },
                     icon: const Icon(Icons.edit_outlined),
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(width: 5,),
-                !widget.task.isComplete ? Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color:  Colors.white.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: IconButton(
-                        onPressed: (){
-                          ApiService.markTaskAsComplete(widget.task.id);
-                        },
-                        icon: const Icon(Icons.done_all),
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(width: 5,),
-                    Text('Marcar como concluído',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    )
-                  ],
-                ) : const SizedBox()
+                const SizedBox(width: 5),
+                !widget.task.isComplete
+                    ? Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                              onPressed: () async {
+                                await ApiService.markTaskAsComplete(widget.task.id);
+                                widget.onTaskModified();
+                              },
+                              icon: const Icon(Icons.done_all),
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'Marcar como concluído',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      )
+                    : const SizedBox(),
               ],
-            )
+            ),
           ],
         ),
       ),

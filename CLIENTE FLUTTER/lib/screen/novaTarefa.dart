@@ -194,7 +194,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Task editedTask = Task(
                       id: widget.task?.id ?? Task.generateUniqueId(),
                       title: _titleController.text,
@@ -205,23 +205,14 @@ class _NovaTarefaState extends State<NovaTarefa> {
                     );
                     if (widget.task == null) {
                       // Cria uma nova tarefa
-        
-                      ApiService.createTask(editedTask);
+                      await ApiService.createTask(editedTask);
                       print('Nova tarefa criada: $editedTask');
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MainScreen()),
-                      );
                     } else {
                       // Edita uma tarefa existente
-        
-                      ApiService.updateTask(widget.task!.id, editedTask);
+                      await ApiService.updateTask(widget.task!.id, editedTask);
                       print('Tarefa editada: ${editedTask.toString()}');
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MainScreen()),
-                      );
                     }
+                    Navigator.pop(context, true);
                   },
                   child: const Text('Salvar Tarefa'),
                 ),

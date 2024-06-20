@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tarefas_rest/screen/novaTarefa.dart';
 import 'package:tarefas_rest/service/apiSevice.dart';
 import 'package:tarefas_rest/widget/taskWidget.dart';
-
 import '../model/task.dart';
 
 class MostrarTarefas extends StatefulWidget {
@@ -13,15 +12,19 @@ class MostrarTarefas extends StatefulWidget {
 }
 
 class _MostrarTarefasState extends State<MostrarTarefas> {
-  
-   late Future<List<Task>> _futureTasks;
+  late Future<List<Task>> _futureTasks;
 
   @override
   void initState() {
     super.initState();
-    //_futureTasks = Task.mockTasks(); //substituir pelo metodo fetch da ApiService
     _futureTasks = ApiService.fetchTasks();
-  } 
+  }
+
+  void _refreshTasks() {
+    setState(() {
+      _futureTasks = ApiService.fetchTasks();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class _MostrarTarefasState extends State<MostrarTarefas> {
               future: _futureTasks,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: const CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Erro: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -44,7 +47,10 @@ class _MostrarTarefasState extends State<MostrarTarefas> {
                     itemCount: tasks.length,
                     itemBuilder: (context, index) {
                       Task task = tasks[index];
-                      return TaskWidget(task: task);
+                      return TaskWidget(
+                        task: task,
+                        onTaskModified: _refreshTasks,
+                      );
                     },
                   );
                 }
@@ -54,11 +60,14 @@ class _MostrarTarefasState extends State<MostrarTarefas> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                bool? result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const NovaTarefa()),
                 );
+                if (result == true) {
+                  _refreshTasks();
+                }
               },
               child: const Text('Criar Tarefa'),
             ),

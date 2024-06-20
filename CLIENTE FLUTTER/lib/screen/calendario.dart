@@ -20,16 +20,20 @@ class _CalendarioState extends State<Calendario> {
   @override
   void initState() {
     super.initState();
-    //_futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
     _futureTasks = ApiService.fetchTasksByDate(_focusedDay);
+  }
+
+  void _refreshTasks() {
+    setState(() {
+      _futureTasks = ApiService.fetchTasksByDate(_focusedDay);
+    });
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     setState(() {
       _selectedDay = selectedDay;
       _focusedDay = focusedDay;
-      //_futureTasks = Task.mockTasks(); // Mudar pro metodo da APiService (_focusedDay)
-      _futureTasks = ApiService.fetchTasksByDate(_focusedDay);
+      _refreshTasks();
     });
   }
 
@@ -91,7 +95,10 @@ class _CalendarioState extends State<Calendario> {
                   itemCount: tasks.length,
                   itemBuilder: (context, index) {
                     Task task = tasks[index];
-                    return TaskWidget(task: task);
+                    return TaskWidget(
+                      task: task,
+                      onTaskModified: _refreshTasks,
+                    );
                   },
                 );
               }
