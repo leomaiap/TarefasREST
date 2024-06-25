@@ -79,6 +79,27 @@ class _NovaTarefaState extends State<NovaTarefa> {
     }
   }
 
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        content: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(message, style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+            )),
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -195,21 +216,37 @@ class _NovaTarefaState extends State<NovaTarefa> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
+                    if (_titleController.text.isEmpty || _annotationController.text.isEmpty) {
+                      _showSnackbar('Por favor, preencha todos os campos.');
+                      return;
+                    }
+
+                    final DateTime combinedDateTime = DateTime(
+                      _selectedDate.year,
+                      _selectedDate.month,
+                      _selectedDate.day,
+                      _selectedTime.hour,
+                      _selectedTime.minute,
+                    );
+
                     Task editedTask = Task(
                       id: widget.task?.id ?? Task.generateUniqueId(),
                       title: _titleController.text,
                       annotation: _annotationController.text,
-                      date: _selectedDate.add(Duration(hours: _selectedTime.hour, minutes: _selectedTime.minute)),
+                      date: combinedDateTime,
                       color: _selectedColorIndex,
                       isComplete: widget.task?.isComplete ?? false,
                     );
+
                     if (widget.task == null) {
                       // Cria uma nova tarefa
                       await ApiService.createTask(editedTask);
+                      _showSnackbar('Nova tarefa criada!');
                       print('Nova tarefa criada: $editedTask');
                     } else {
                       // Edita uma tarefa existente
                       await ApiService.updateTask(widget.task!.id, editedTask);
+                      _showSnackbar('Tarefa editada!');
                       print('Tarefa editada: ${editedTask.toString()}');
                     }
                     Navigator.pop(context, true);

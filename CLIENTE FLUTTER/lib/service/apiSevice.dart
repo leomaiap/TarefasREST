@@ -7,14 +7,14 @@ class ApiService {
 
   ApiService();
 
-  static final String baseUrl = 'http://192.168.1.102:8000';
+  static final String baseUrl = 'http://localhost:8000';
 
   // Método para buscar todas as tarefas
   static Future<List<Task>> fetchTasks() async {
     final response = await http.get(Uri.parse('$baseUrl/tasks/'));
 
     if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
+      List<dynamic> body = json.decode(utf8.decode(response.bodyBytes));
       List<Task> tasks = body.map((dynamic item) => Task.fromJson(item)).toList();
       return tasks;
     } else {
@@ -69,10 +69,9 @@ class ApiService {
   static Future<List<Task>> fetchTasksByDate(DateTime date) async {
     final String formattedDate = date.toIso8601String().split('T').first;
     final response = await http.get(Uri.parse('$baseUrl/tasks/by-date/?date=$formattedDate'));
-    //print('$baseUrl/tasks/by-date/?date=$formattedDate');
 
     if (response.statusCode == 200) {
-      List<dynamic> body = json.decode(response.body);
+      List<dynamic> body = json.decode(utf8.decode(response.bodyBytes));
       List<Task> tasks = body.map((dynamic item) => Task.fromJson(item)).toList();
       return tasks;
     } else {
@@ -81,7 +80,7 @@ class ApiService {
   }
 
   //Metodo para marcar como concluida
-  static Future<Task> markTaskAsComplete(int id) async {
+  static Future<void> markTaskAsComplete(int id) async {
     final response = await http.put(
       Uri.parse('$baseUrl/tasks/$id/complete/'), 
       headers: <String, String>{
@@ -89,9 +88,8 @@ class ApiService {
       },
       body: jsonEncode({'isComplete': true}),
     );
-    print('$baseUrl/tasks/$id/complete/');
     if (response.statusCode == 200) {
-      return Task.fromJson(json.decode(response.body));
+      //return Task.fromJson(json.decode(response.body));
     } else {
       throw Exception('Fail');
     }

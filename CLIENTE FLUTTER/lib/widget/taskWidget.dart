@@ -29,6 +29,27 @@ class _TaskWidgetState extends State<TaskWidget> {
     const Color(0xFFD9BCAD),
   ];
 
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        content: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(message, style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+            )),
+        ),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.all(12),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -146,6 +167,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                       child: IconButton(
                         onPressed: () async {
                           await ApiService.deleteTask(widget.task.id);
+                          _showSnackbar('Tarefa apagada');
                           widget.onTaskModified();
                         },
                         icon: const Icon(Icons.delete_outline),
@@ -186,6 +208,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                             child: IconButton(
                               onPressed: () async {
                                 await ApiService.markTaskAsComplete(widget.task.id);
+                                _showSnackbar('Tarefa concluída');
                                 widget.onTaskModified();
                               },
                               icon: const Icon(Icons.done_all),

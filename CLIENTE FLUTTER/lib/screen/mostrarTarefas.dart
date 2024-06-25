@@ -5,7 +5,7 @@ import 'package:tarefas_rest/widget/taskWidget.dart';
 import '../model/task.dart';
 
 class MostrarTarefas extends StatefulWidget {
-  const MostrarTarefas({Key? key}) : super(key: key);
+  const MostrarTarefas({super.key});
 
   @override
   State<MostrarTarefas> createState() => _MostrarTarefasState();
@@ -59,17 +59,21 @@ class _MostrarTarefasState extends State<MostrarTarefas> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: ElevatedButton(
-              onPressed: () async {
-                bool? result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const NovaTarefa()),
-                );
-                if (result == true) {
-                  _refreshTasks();
-                }
-              },
-              child: const Text('Criar Tarefa'),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: FilledButton.icon(
+                onPressed: () async {
+                  bool? result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NovaTarefa()),
+                  );
+                  if (result == true) {
+                    _refreshTasks();
+                  }
+                },
+                icon: Icon(Icons.note_add),
+                label: const Text('Criar Tarefa'),
+              ),
             ),
           ),
         ],
